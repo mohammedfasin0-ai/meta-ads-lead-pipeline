@@ -1,0 +1,174 @@
+# Lead Discovery Pipeline
+
+An automated lead discovery pipeline built using Python, Playwright, Supabase and n8n.
+
+This project was built to automate my outbound prospecting workflow. Instead of manually browsing the Meta Ads Library, opening every advertiser, checking their Instagram profile and qualifying them one by one, this pipeline performs the entire process automatically.
+
+The architecture is intentionally modular so it can be adapted to virtually any niche by simply changing the search term.
+
+---
+
+# Features
+
+- Scrapes businesses directly from the Meta Ads Library
+- Detects Instagram call-to-action links from advertisements
+- Enriches Instagram business profiles using GraphQL interception
+- Extracts:
+  - Followers
+  - Following
+  - Number of posts
+  - Biography
+  - Website
+  - Last posting date
+- Stores structured data inside Supabase (PostgreSQL)
+- Prevents duplicate profile enrichment
+- Sends Telegram notifications for qualified leads through n8n
+- Designed to be reusable for any industry
+
+---
+
+# Why I Built This
+
+Finding businesses actively spending money on advertising is one of the strongest buying signals for outbound prospecting.
+
+My manual workflow looked like this:
+
+Meta Ads Library
+→ Open advertiser
+→ Open Instagram
+→ Check followers
+→ Copy information
+→ Repeat hundreds of times
+
+I wanted to automate that process.
+
+This project continuously builds a structured database of businesses currently running Meta advertisements and enriches their public Instagram data for further qualification.
+
+---
+
+# Architecture
+
+                Meta Ads Library
+                       │
+                       ▼
+            Playwright Meta Scraper
+                       │
+                       ▼
+                 Supabase Database
+                       │
+                       ▼
+          Playwright Instagram Enricher
+                       │
+                       ▼
+              Updated Business Database
+                       │
+                       ▼
+                 n8n Automation
+                       │
+                       ▼
+              Telegram Notifications
+---
+
+# Tech Stack
+
+- Python
+- Playwright
+- GraphQL Interception
+- Supabase
+- PostgreSQL
+- n8n
+- Telegram Bot API
+
+---
+
+# Project Structure
+
+Lead-Discovery-Pipeline/
+
+├── scrapers/
+│   ├── meta_ads_scraper.py
+│   └── instagram_enricher.py
+│
+├── workflows/
+│   └── lead_notification_pipeline.json
+│
+├── database/
+│   └── schema.sql
+│
+├── docs/
+│
+├── requirements.txt
+├── .env.example
+├── .gitignore
+└── README.md
+---
+
+# Database
+
+The pipeline stores businesses inside a PostgreSQL database.
+
+Example fields:
+
+- archive_id
+- page_name
+- title
+- body
+- cta
+- instagram_link
+- followers
+- following
+- posts
+- bio
+- website
+- last_post
+- status
+- telegram_notified
+
+---
+
+# Customization
+
+To search another industry, simply replace the search term inside the Meta Ads scraper.
+
+Example searches:
+
+- Dentist
+- Roofing
+- Law Firm
+- Restaurant
+- Gym
+- Real Estate
+- Accounting
+- Financial Advisor
+
+The Instagram enrichment stage requires no changes as long as the advertisement points to an Instagram profile.
+
+---
+
+# Possible Extensions
+
+- Website enrichment
+- Email enrichment
+- AI lead scoring
+- CRM integration
+- RAG knowledge base
+- Company intelligence
+- Multi-platform enrichment
+
+---
+
+# Notes
+
+This project was built as a practical automation engineering project.
+
+No Instagram scraping is performed through private APIs or authentication bypasses. The pipeline only processes publicly accessible business profile information exposed through Instagram's web client while browsing normally with Playwright.
+
+---
+
+# License
+
+MIT License
+
+# Important 
+
+I only recommend 200 scrolls, as I have given it in the scraper's code itself; run it multiple times a day with intervals so you stay under Meta's radar. As for the Instagram scraper, be extra aware, save a session and use it as context to open the page every single time till it expires; make sure you stay under 200 profiles in a single run. Even though I have randomised the numbers, it's still good to be cautious.  
